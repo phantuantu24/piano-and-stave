@@ -1,0 +1,14 @@
+<div id="container">
+  <div id="content">
+    <div id="note-info-component" class="panel">
+       <app-note-info></app-note-info>
+    </div>
+    <div id="notation-component" class="panel">
+      <!-- <notation [mode]="mode"></notation> -->
+      Notion here
+    </div>
+  </div>
+  <div id="keyboard-component">
+    <app-keyboard (keyPlayed)="handleKeyPlayed($event)"></app-keyboard>
+  </div>
+</div>

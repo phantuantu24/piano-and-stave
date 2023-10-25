@@ -1,0 +1,43 @@
+#container {
+  width: 80%;
+  margin: 20px auto;
+  border: 2px solid red;
+}
+
+#content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .panel {
+    width: 100%;
+    height: 392px;
+    background:#fff;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: 20px;
+    border: 2px solid green;
+  }
+
+  #note-info-component {
+    flex-basis: 30%;
+  }
+
+  #notation-component {
+    flex-basis: 70%; 
+  }
+}
+
+
+#keyboard-component {
+  display: flex;
+  justify-content: center;
+  margin: 0 20px;
+}
+
+.panel {
+  height: 186px;
+  padding: 0px;
+  margin: 0 20px 20px 0;
+  background:#FFFFF2;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
