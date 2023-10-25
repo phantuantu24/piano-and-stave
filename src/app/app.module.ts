@@ -8,9 +8,12 @@ import { PianoService } from './@core-service/piano-service';
 import { SoundService } from './@core-service/sound-service';
 import { NoteInfoComponent } from './components/note-info/note-info.component';
 import { NotationComponent } from './components/notation/notation.component';
+import { SafePipe } from './@pipe/safe.pipe';
+import { NotationService } from './@core-service/notation-service';
 
 @NgModule({
   declarations: [
+    SafePipe,
     AppComponent,
     KeyboardComponent,
     NoteInfoComponent,
@@ -22,7 +25,8 @@ import { NotationComponent } from './components/notation/notation.component';
   ],
   providers: [
     PianoService,
-    SoundService
+    SoundService,
+    NotationService
   ],
   bootstrap: [AppComponent]
 })

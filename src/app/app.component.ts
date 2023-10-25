@@ -12,11 +12,8 @@ export class AppComponent implements OnInit {
   constructor(
     private pianoService: PianoService,
     private soundService: SoundService,
-  ) { 
-    pianoService.notePlayed$.subscribe((note: IPianoNote)=> {
-      console.log(note);
-      this.soundService.playNote(note.keyId);
-    });
+  ) {
+    pianoService.notePlayed$.subscribe((note: IPianoNote | undefined) => this.soundService.playNote(note!.keyId));
   }
 
   ngOnInit(): void {

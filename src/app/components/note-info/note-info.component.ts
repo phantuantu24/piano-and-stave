@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { PianoService } from 'src/app/@core-service/piano-service';
-import { SoundService } from 'src/app/@core-service/sound-service';
 import { IPianoNote } from 'src/app/@shared/interface';
 
 @Component({
@@ -8,26 +8,36 @@ import { IPianoNote } from 'src/app/@shared/interface';
   templateUrl: './note-info.component.html',
   styleUrls: ['./note-info.component.scss']
 })
-export class NoteInfoComponent {
+export class NoteInfoComponent implements OnDestroy {
+  subscription: Subscription;
   currentNote?: IPianoNote;
   alternateNote?: IPianoNote;
   title: string = "Play";
 
   constructor(
-    private pianoService: PianoService,
-    private soundService: SoundService
+    private pianoService: PianoService
   ) {
-    pianoService.notePlayed$.subscribe((pianoNote: IPianoNote) => {
+    this.subscription = pianoService.notePlayed$.subscribe((pianoNote: IPianoNote | undefined) => {
       this.title = "Now playing";
-      this.currentNote = pianoNote;
-      this.alternateNote = this.pianoService.getAlternateNote(pianoNote.noteId);
-      console.log(this.alternateNote);
-
+      this.currentNote = pianoNote!;
+      this.alternateNote = this.pianoService.getAlternateNote(pianoNote!.noteId);
     });
+
+    pianoService.isClear$.asObservable().subscribe((isClear: boolean) => {
+      if (isClear) {
+        this.currentNote = undefined;
+        this.alternateNote = undefined;
+        this.title = 'Play';
+      }
+    })
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   playNote(note: IPianoNote) {
-    this.soundService.playNote(note.keyId);
+    this.pianoService.playNoteByNoteId(note.noteId);
   }
 
 }

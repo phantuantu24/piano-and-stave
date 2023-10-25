@@ -60,7 +60,7 @@ export class SoundService {
 
   playNote(keyId: number): void {
     if (this.buffers!.hasOwnProperty(keyId)) {
-      const source = this.context!.createBufferSource();
+      const source: AudioBufferSourceNode = this.context!.createBufferSource();
       source.buffer = this.buffers![keyId];
       source.connect(this.context!.destination);
       source.start(0);

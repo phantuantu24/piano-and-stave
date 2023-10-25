@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Subject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { PIANO_KEY_MAP } from "../@shared/constant";
 import { IPianoNote, IPianoNoteMap } from "../@shared/interface";
 
@@ -9,7 +9,8 @@ export class PianoService {
   private pianoNoteMap: IPianoNoteMap = {};
 
   // Observable sources
-  private pianoNotePlayedSource = new Subject<IPianoNote>();
+  pianoNotePlayedSource = new Subject<IPianoNote | undefined>();
+  isClear$ = new BehaviorSubject<boolean>(false);
   // Observable streams
   notePlayed$ = this.pianoNotePlayedSource.asObservable();
 
@@ -25,6 +26,23 @@ export class PianoService {
   playNoteByKeyId(keyId: number): void {
     const note: IPianoNote = this.getNoteByKeyId(keyId);
     this.pianoNotePlayedSource.next(note);
+  }
+
+  playNoteByNoteId(noteId: string): void {
+    const note: IPianoNote = this.getNoteByNoteId(noteId);
+    this.pianoNotePlayedSource.next(note);
+  }
+
+  getNoteByNoteId(noteId: string): IPianoNote {
+    if (this.pianoNoteMap.hasOwnProperty(noteId)) {
+      const keyId: number = Number(this.pianoNoteMap[noteId]);
+      const accidentalSymbol: string = this.checkAccidentalSymbolFromNote(noteId);
+      const fullName: string = `${noteId[0].toUpperCase()}${accidentalSymbol}`;
+      const octave: number = Number(noteId[1]);
+      return { keyId, noteId, accidentalSymbol, fullName, octave };
+    } else {
+      throw new Error("Invalid noteId.");
+    }
   }
 
   getNoteByKeyId(keyId: number): IPianoNote {
@@ -46,21 +64,24 @@ export class PianoService {
     const keyId: number = Number(this.pianoNoteMap[noteId]);
     // get array of value with keyId
     const notes: string[] = this.pianoKeyMap[keyId];
-    
+
     if (notes.length > 1) {
+      const isSameNote: boolean = notes[0] === noteId;
+      const validNote: string = isSameNote ? notes[1]: notes[0];
+
       const octave: number = Number(noteId[1]);
-      const accidentalSymbol: string = this.checkAccidentalSymbolFromNote(notes[1]);
-      const fullName: string = `${notes[1][0].toUpperCase()}${accidentalSymbol}`;
+      const accidentalSymbol: string = this.checkAccidentalSymbolFromNote(validNote);
+      const fullName: string = `${validNote[0].toUpperCase()}${accidentalSymbol}`;
       alternateNote = {
         keyId, accidentalSymbol, fullName, octave,
-        noteId: notes[1]
+        noteId: validNote
       }
     }
 
     return alternateNote as IPianoNote;
   }
 
-  checkAccidentalSymbolFromNote(noteId: string): string {
+  checkAccidentalSymbolFromNote(noteId: string): string { 
     let rs: string = '';
     if (noteId.length === 3) {
       const thirdCharacter: string = noteId[2];
