@@ -17,4 +17,5 @@ export interface IPianoNote {
   accidentalSymbol: string;
   fullName: string;
   octave: number;
+  shouldAdd?: boolean; 
 }

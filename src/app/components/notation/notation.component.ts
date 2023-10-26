@@ -58,10 +58,20 @@ export class NotationComponent implements OnInit, AfterViewChecked {
     this.soundService.playNote(note.keyId);
   }
 
-  handleClear() {
-    this.notationService.clear();
+  handleClear(isRemoveLastNote: boolean = false) {
+    if (isRemoveLastNote) {
+      this.notationService.removeLastNote();
+      const noteArr: IPianoNote[] = this.notationService.notes;
+      if (noteArr.length > 0) {
+        this.pianoService.pianoNotePlayedSource.next({
+          ...noteArr[noteArr.length - 1],
+          shouldAdd: false
+        })
+      }
+    } else {
+      this.notationService.clear();
+    }
+    this.notationService.notes.length === 0 && this.pianoService.isClear$.next(true);
     this.notationAsSVG = this.notationService.renderNotation();
-    this.pianoService.isClear$.next(true);
   }
-
 }

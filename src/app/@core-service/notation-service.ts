@@ -23,11 +23,18 @@ export class NotationService {
       // remove notes are displaying on stave
       this.notes.length = 0;
     }
-    this.notes.push(note);
+
+    if (!note.hasOwnProperty('shouldAdd')) {
+      this.notes.push(note);
+    } 
   }
 
   clear() {
     this.notes.length = 0;
+  }
+
+  removeLastNote() {
+    this.notes.splice(-1);
   }
 
   renderNotation(): string {
